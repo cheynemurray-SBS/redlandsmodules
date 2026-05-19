@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistical Inference — MBA Learning Module | University of Redlands</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{--maroon:#570C0F;--maroon-dark:#3E0809;--maroon-deep:#2A0506;--maroon-light:#9E2A2E;--maroon-pale:#F5EAEA;--maroon-tint:#EDD8D8;--gold:#C8A84B;--gold-light:#DEC16F;--gold-pale:#FBF5E6;--gold-tint:#F5E8C0;--gold-dark:#9E7E30;--gray-900:#1A1A1A;--gray-700:#404040;--gray-500:#737373;--gray-300:#B8B8B8;--gray-100:#EFEFEF;--gray-50:#F8F7F5;--white:#FFFFFF;--cream:#FBF9F5;--green-pale:#EAF3E0;--green-mid:#2D6A1F;--green-tint:#C3DFB2;--font-serif:'EB Garamond',Georgia,serif;--font-sans:'Source Sans 3',system-ui,sans-serif;--font-mono:'Source Code Pro',monospace;--r-sm:4px;--r-md:6px;--r-lg:10px;--r-full:999px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:#F0EDE8;color:var(--gray-900);min-height:100vh}
+.shell{max-width:840px;margin:0 auto;background:var(--white);min-height:100vh;display:flex;flex-direction:column;box-shadow:0 0 40px rgba(0,0,0,.12)}
+.hdr{background:var(--maroon);color:var(--white)}
+.hdr-top{background:var(--maroon-dark);padding:10px 2rem;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(200,168,75,.3)}
+.hdr-wordmark{font-family:var(--font-serif);font-size:15px;font-weight:400;color:var(--gold-light);letter-spacing:.03em;line-height:1.2}
+.hdr-wordmark span{display:block;font-size:10px;font-weight:300;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase;margin-top:1px}
+.hdr-divider{width:1px;height:28px;background:rgba(200,168,75,.3);flex-shrink:0}
+.hdr-dept{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase}
+.hdr-body{padding:1.75rem 2rem 2rem}
+.hdr-eyebrow{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:500}
+.hdr-title{font-family:var(--font-serif);font-size:32px;font-weight:500;line-height:1.15;color:var(--white);margin-bottom:6px}
+.hdr-sub{font-size:14px;color:rgba(255,255,255,.6);font-style:italic;font-family:var(--font-serif);margin-bottom:14px}
+.hdr-badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge{font-size:10px;padding:3px 10px;border-radius:var(--r-full);border:1px solid rgba(200,168,75,.5);color:var(--gold-light);letter-spacing:.05em;text-transform:uppercase;font-weight:500}
+.hdr-gold-bar{height:4px;background:linear-gradient(90deg,var(--gold) 0%,var(--gold-light) 50%,var(--gold) 100%)}
+.prog-wrap{padding:1.25rem 2rem 0;background:var(--cream);border-bottom:1px solid #E8E2D8}
+.prog-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.prog-label{font-size:11px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.07em;font-weight:500}
+.prog-pct{font-size:11px;font-weight:600;color:var(--maroon);font-family:var(--font-mono)}
+.prog-track{height:3px;background:#DDD8CF;border-radius:var(--r-full);margin-bottom:1rem}
+.prog-fill{height:100%;background:var(--gold);border-radius:var(--r-full);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.nav-wrap{background:var(--cream);padding:0 2rem 1rem;display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid #E8E2D8}
+.nav-btn{font-size:12px;padding:5px 12px;border-radius:var(--r-full);border:1px solid #D8D2C8;background:var(--white);color:var(--gray-500);cursor:pointer;transition:all .18s;font-family:var(--font-sans);white-space:nowrap}
+.nav-btn:hover{border-color:var(--maroon-light);color:var(--maroon)}
+.nav-btn.active{background:var(--maroon);border-color:var(--maroon);color:var(--white);font-weight:600}
+.nav-btn.done{border-color:var(--gold-dark);color:var(--gold-dark)}
+.nav-btn.done::before{content:'✓ '}
+.content{padding:1.75rem 2rem 3rem;flex:1;background:var(--white)}
+.section{display:none;animation:fadeIn .28s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+h2{font-family:var(--font-serif);font-size:24px;font-weight:500;color:var(--maroon-dark);margin-bottom:1rem;line-height:1.2;border-bottom:2px solid var(--gold);padding-bottom:.5rem}
+h3{font-family:var(--font-serif);font-size:16px;font-weight:500;color:var(--maroon);margin-bottom:.5rem;line-height:1.35}
+p{font-size:14px;color:var(--gray-700);line-height:1.75;margin-bottom:.75rem}
+p:last-child{margin-bottom:0}
+.card{background:var(--white);border:1px solid #E8E2D8;border-radius:var(--r-lg);padding:1.25rem 1.5rem;margin-bottom:1rem}
+.card-maroon{background:var(--maroon-pale);border-color:var(--maroon-tint)}
+.card-gold{background:var(--gold-pale);border-color:var(--gold-tint)}
+.card-green{background:var(--green-pale);border-color:var(--green-tint)}
+.card-gray{background:var(--gray-50);border-color:var(--gray-100)}
+.card-maroon h3{color:var(--maroon-dark)}
+.card-maroon p{color:var(--maroon)}
+.card-gold h3{color:var(--gold-dark)}
+.card-gold p{color:#6B4E10}
+.card-green h3{color:var(--green-mid)}
+.card-green p{color:#2A5018}
+.formula{font-family:var(--font-mono);font-size:14px;background:var(--maroon-pale);border:1px solid var(--maroon-tint);border-left:3px solid var(--maroon);border-radius:0 var(--r-md) var(--r-md) 0;padding:.75rem 1.25rem;margin:.75rem 0;color:var(--maroon-dark);letter-spacing:.02em}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1rem}
+.metric{background:var(--maroon-pale);border:1px solid var(--maroon-tint);border-top:3px solid var(--maroon);border-radius:var(--r-md);padding:1rem}
+.metric-label{font-size:10px;color:var(--maroon-light);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:4px}
+.metric-val{font-family:var(--font-serif);font-size:26px;font-weight:500;color:var(--maroon-dark);line-height:1}
+.metric-sub{font-size:11px;color:var(--gray-500);margin-top:4px}
+.range-group{background:var(--gray-50);border:1px solid #E8E2D8;border-radius:var(--r-md);padding:1rem 1.25rem;margin:.75rem 0}
+.range-row{display:flex;align-items:center;gap:12px;margin:8px 0}
+.range-row:first-child{margin-top:0}
+.range-row:last-child{margin-bottom:0}
+.range-label{font-size:12px;color:var(--gray-700);min-width:130px}
+.range-row input[type=range]{flex:1;accent-color:var(--maroon);cursor:pointer}
+.range-val{font-size:13px;font-weight:600;min-width:44px;text-align:right;color:var(--maroon);font-family:var(--font-mono)}
+.result-box{background:var(--maroon);border-radius:var(--r-md);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;margin-top:.75rem}
+.result-label{font-size:13px;color:rgba(255,255,255,.7)}
+.result-val{font-family:var(--font-serif);font-size:28px;font-weight:500;color:var(--gold-light)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:560px){.two-col{grid-template-columns:1fr}}
+.step-list{list-style:none;counter-reset:steps}
+.step-list li{counter-increment:steps;padding:.75rem 0 .75rem 3rem;position:relative;font-size:14px;color:var(--gray-700);line-height:1.65;border-bottom:1px solid #F0EDE8}
+.step-list li:last-child{border-bottom:none;padding-bottom:0}
+.step-list li::before{content:counter(steps);position:absolute;left:0;top:.65rem;width:26px;height:26px;background:var(--maroon);color:var(--gold-light);border-radius:50%;font-size:12px;font-weight:600;font-family:var(--font-mono);display:flex;align-items:center;justify-content:center}
+.step-list li strong{font-weight:600;color:var(--maroon-dark)}
+.verdict-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #F0EDE8;font-size:13px}
+.verdict-row:last-child{border-bottom:none}
+.verdict-label{flex:1;color:var(--gray-700)}
+.chip{font-size:11px;padding:3px 10px;border-radius:var(--r-full);font-weight:600}
+.chip-maroon{background:var(--maroon-pale);color:var(--maroon);border:1px solid var(--maroon-tint)}
+.chip-green{background:var(--green-pale);color:var(--green-mid);border:1px solid var(--green-tint)}
+.tag{display:inline-block;font-size:11px;padding:3px 9px;border-radius:var(--r-full);margin:2px;font-weight:500}
+.tag-maroon{background:var(--maroon-pale);color:var(--maroon);border:1px solid var(--maroon-tint)}
+.tag-gold{background:var(--gold-pale);color:var(--gold-dark);border:1px solid var(--gold-tint)}
+.ci-track{position:relative;height:48px;margin:.75rem 0}
+.width-row{display:flex;align-items:center;gap:12px;font-size:13px;margin:7px 0}
+.w-label{min-width:70px;color:var(--gray-700);font-family:var(--font-mono);font-size:12px}
+.width-track{flex:1;height:6px;background:#E8E2D8;border-radius:var(--r-full);overflow:hidden}
+.width-fill{height:100%;border-radius:var(--r-full)}
+.w-outcome{font-size:12px;font-weight:600;min-width:80px}
+.quiz-opt{padding:11px 14px;border:1px solid #E8E2D8;border-radius:var(--r-md);margin:6px 0;cursor:pointer;font-size:14px;color:var(--gray-700);transition:all .18s;background:var(--white);font-family:var(--font-sans);text-align:left;width:100%}
+.quiz-opt:hover:not(.disabled){border-color:var(--maroon);color:var(--maroon-dark);background:var(--maroon-pale)}
+.quiz-opt.correct{background:var(--green-pale);border-color:var(--green-mid);color:#1A4010;font-weight:500}
+.quiz-opt.wrong{background:var(--maroon-pale);border-color:var(--maroon-light);color:var(--maroon-dark)}
+.quiz-opt.disabled{cursor:default}
+.feedback{padding:.75rem 1rem;border-radius:var(--r-md);font-size:13px;margin-top:.75rem;display:none;line-height:1.65}
+.feedback.show{display:block}
+.feedback.ok{background:var(--green-pale);color:#1A4010;border:1px solid var(--green-tint)}
+.feedback.err{background:var(--maroon-pale);color:var(--maroon-dark);border:1px solid var(--maroon-tint)}
+.btn-next{width:100%;margin-top:1.25rem;padding:13px;background:var(--maroon);color:var(--gold-light);border:none;border-radius:var(--r-md);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font-sans);transition:background .18s;letter-spacing:.01em}
+.btn-next:hover{background:var(--maroon-dark)}
+#t-verdict{margin-top:1rem;padding:1rem 1.25rem;border-radius:var(--r-md);font-size:13px;line-height:1.65;font-weight:500;border:1px solid transparent}
+.pval-strip{height:30px;border-radius:var(--r-md);overflow:hidden;margin:.75rem 0;background:linear-gradient(to right,var(--maroon) 0%,var(--gold) 45%,#B8D4A0 70%,var(--green-pale) 100%)}
+.pval-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--gray-500);font-family:var(--font-mono);margin-bottom:6px}
+.misconception{border-left:3px solid var(--gold);padding:.9rem 1rem .9rem 1.25rem;background:var(--gold-pale);border-radius:0 var(--r-md) var(--r-md) 0;border-top:1px solid var(--gold-tint);border-right:1px solid var(--gold-tint);border-bottom:1px solid var(--gold-tint);margin-bottom:1rem}
+.misconception h3{color:var(--gold-dark);font-family:var(--font-serif)}
+.misconception p{color:#6B4E10;font-size:13px}
+.chart-wrap{position:relative;width:100%;height:200px;margin:.75rem 0}
+.chart-wrap canvas{display:block;width:100%!important}
+.footer{background:var(--maroon-dark);padding:1rem 2rem;text-align:center;font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.04em}
+.footer strong{color:var(--gold);font-weight:500}
+.hl-maroon{color:var(--maroon);font-weight:500}
+@media(max-width:600px){.hdr-body,.hdr-top,.prog-wrap,.nav-wrap,.content{padding-left:1.25rem;padding-right:1.25rem}.metrics{grid-template-columns:repeat(2,1fr)}.hdr-title{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="hdr">
+  <div class="hdr-top">
+    <div class="hdr-wordmark">University of Redlands<span>Redlands &middot; California &middot; Est. 1907</span></div>
+    <div class="hdr-divider"></div>
+    <span class="hdr-dept">School of Business</span>
+  </div>
+  <div class="hdr-body">
+    <p class="hdr-eyebrow">MBA Data Analysis &nbsp;&middot;&nbsp; Asynchronous Learning Module</p>
+    <h1 class="hdr-title">Statistical Inference</h1>
+    <p class="hdr-sub">From sample data to business decisions &mdash; with confidence.</p>
+    <div class="hdr-badges">
+      <span class="badge">6 Sections</span>
+      <span class="badge">Interactive</span>
+      <span class="badge">Self-Paced</span>
+      <span class="badge">Graduate Level</span>
+    </div>
+  </div>
+  <div class="hdr-gold-bar"></div>
+</header>
+<div class="prog-wrap">
+  <div class="prog-meta"><span class="prog-label">Module progress</span><span class="prog-pct" id="prog-pct">0%</span></div>
+  <div class="prog-track"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+</div>
+<nav class="nav-wrap" id="nav" aria-label="Module sections">
+  <button class="nav-btn active" onclick="go(0)">1 &middot; Populations &amp; Samples</button>
+  <button class="nav-btn" onclick="go(1)">2 &middot; Sample Size</button>
+  <button class="nav-btn" onclick="go(2)">3 &middot; Sampling Distribution</button>
+  <button class="nav-btn" onclick="go(3)">4 &middot; Confidence Intervals</button>
+  <button class="nav-btn" onclick="go(4)">5 &middot; Hypothesis Testing</button>
+  <button class="nav-btn" onclick="go(5)">6 &middot; One-Sample t-test</button>
+</nav>
+<main class="content">
+
+<!-- S0 -->
+<div class="section active" id="s0" role="region" aria-label="Section 1">
+  <h2>Populations &amp; Samples</h2>
+  <div class="card card-maroon"><h3>Why statistical inference?</h3><p>In business, we rarely measure everyone. A retailer cannot survey every potential customer; a manufacturer cannot test every unit. <span class="hl-maroon">Statistical inference</span> lets us draw reliable, quantified conclusions about a large population from a smaller, well-chosen sample &mdash; and attach a precise measure of our uncertainty.</p></div>
+  <div class="two-col">
+    <div class="card"><h3>Population</h3><p style="font-size:13px;color:var(--gray-700)">The entire group of interest &mdash; every customer, every transaction, every unit produced. Often too large or expensive to measure fully.</p><div style="margin-top:10px"><span class="tag tag-maroon">&mu; (mu) &mdash; mean</span><span class="tag tag-maroon">&sigma; &mdash; std dev</span><span class="tag tag-maroon">N &mdash; size</span></div></div>
+    <div class="card"><h3>Sample</h3><p style="font-size:13px;color:var(--gray-700)">A manageable, randomly selected subset. Sample statistics estimate population parameters. Validity depends on how the sample was drawn.</p><div style="margin-top:10px"><span class="tag tag-gold">x&#772; &mdash; mean</span><span class="tag tag-gold">s &mdash; std dev</span><span class="tag tag-gold">n &mdash; size</span></div></div>
+  </div>
+  <div class="card"><h3>Two branches of inference</h3>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:6px">
+      <div style="padding:12px 14px;background:var(--maroon-pale);border-radius:var(--r-md);border:1px solid var(--maroon-tint);border-left:3px solid var(--maroon)"><p style="font-size:13px;font-weight:600;color:var(--maroon);margin-bottom:3px;font-family:var(--font-serif)">Estimation</p><p style="font-size:13px;color:var(--gray-700);margin:0">Use sample statistics to estimate population parameters. Produces a <em>point estimate</em> or an <em>interval estimate</em> &mdash; a confidence interval with an attached probability.</p></div>
+      <div style="padding:12px 14px;background:var(--gold-pale);border-radius:var(--r-md);border:1px solid var(--gold-tint);border-left:3px solid var(--gold)"><p style="font-size:13px;font-weight:600;color:var(--gold-dark);margin-bottom:3px;font-family:var(--font-serif)">Hypothesis Testing</p><p style="font-size:13px;color:var(--gray-700);margin:0">Evaluate a specific claim about a population using sample evidence. <em>Has our average order value changed? Does the new process outperform the old?</em></p></div>
+    </div>
+  </div>
+  <div class="card card-gold"><h3>MBA decision context</h3><p style="font-size:13px">Before committing resources, pricing changes, or operational shifts, executives need to know whether data differences reflect real patterns or mere sampling variation. Inference transforms sample evidence into defensible, probabilistic business decisions.</p></div>
+  <button class="btn-next" onclick="go(1)">Continue to Sample Size &rarr;</button>
+</div>
+
+<!-- S1 -->
+<div class="section" id="s1" role="region" aria-label="Section 2">
+  <h2>Sample Size</h2>
+  <div class="card card-maroon"><h3>The precision dial</h3><p>Larger samples reduce uncertainty but cost more time and money. The right sample size balances statistical precision against operational constraints. Getting this right before data collection is one of the highest-leverage analytical decisions a manager can make.</p></div>
+  <div class="card"><h3>Required sample size &mdash; estimating a mean</h3>
+    <div class="formula">n = ( z* &middot; &sigma; / E )&sup2;</div>
+    <p style="font-size:13px">Where <strong style="font-weight:600;color:var(--maroon-dark)">z*</strong> is the critical value for your confidence level, <strong style="font-weight:600;color:var(--maroon-dark)">&sigma;</strong> is the estimated population standard deviation, and <strong style="font-weight:600;color:var(--maroon-dark)">E</strong> is the maximum acceptable margin of error.</p>
+  </div>
+  <div class="card"><h3>Interactive calculator</h3>
+    <div class="range-group">
+      <div class="range-row"><span class="range-label">Confidence level</span><input type="range" id="cl" min="0" max="2" step="1" value="1" oninput="updateN()" aria-label="Confidence level"><span class="range-val" id="cl-v">95%</span></div>
+      <div class="range-row"><span class="range-label">Est. pop. SD (&sigma;)</span><input type="range" id="sigma" min="5" max="50" step="1" value="15" oninput="updateN()" aria-label="Population standard deviation"><span class="range-val" id="sig-v">15</span></div>
+      <div class="range-row"><span class="range-label">Margin of error (E)</span><input type="range" id="err" min="1" max="20" step="1" value="5" oninput="updateN()" aria-label="Margin of error"><span class="range-val" id="err-v">5</span></div>
+    </div>
+    <div class="result-box"><span class="result-label">Required sample size (n)</span><span class="result-val" id="nval">35</span></div>
+    <p id="n-insight" style="font-size:12px;margin-top:8px;color:var(--gray-500);font-style:italic"></p>
+  </div>
+  <div class="two-col">
+    <div class="card card-maroon"><h3>Factors that increase n</h3><p style="font-size:13px">Higher confidence &middot; Greater variability &middot; Smaller required margin of error</p></div>
+    <div class="card card-gold"><h3>Practical considerations</h3><p style="font-size:13px">Non-response, cost ceilings, finite-population correction, and data quality all shape the final design.</p></div>
+  </div>
+  <button class="btn-next" onclick="go(2)">Continue to Sampling Distribution &rarr;</button>
+</div>
+
+<!-- S2 -->
+<div class="section" id="s2" role="region" aria-label="Section 3">
+  <h2>Sampling Distribution of x&#772;</h2>
+  <div class="card card-maroon"><h3>The Central Limit Theorem (CLT)</h3><p>If we repeatedly drew samples of size n from the same population and plotted each sample mean, those means form the <span class="hl-maroon">sampling distribution of x&#772;</span>. The CLT tells us this distribution is approximately normal for sufficiently large n &mdash; regardless of the population&rsquo;s shape.</p></div>
+  <div class="metrics">
+    <div class="metric"><p class="metric-label">Mean of x&#772;</p><p class="metric-val">&mu;</p><p class="metric-sub">Same as population</p></div>
+    <div class="metric"><p class="metric-label">Standard Error</p><p class="metric-val">&sigma;/&radic;n</p><p class="metric-sub">Decreases with n</p></div>
+    <div class="metric"><p class="metric-label">Shape (n &ge; 30)</p><p class="metric-val" style="font-size:18px">Normal</p><p class="metric-sub">CLT guarantees this</p></div>
+  </div>
+  <div class="card"><h3>CLT visualizer &mdash; watch the distribution tighten</h3>
+    <p style="font-size:13px">Adjust sample size to see the sampling distribution (maroon) narrow around the true mean, while the population distribution (gray) stays wide.</p>
+    <div class="range-group">
+      <div class="range-row"><span class="range-label">Sample size (n)</span><input type="range" id="clt-n" min="2" max="100" step="1" value="10" oninput="drawCLT()" aria-label="Sample size"><span class="range-val" id="clt-n-v">10</span></div>
+      <div class="range-row"><span class="range-label">Population SD (&sigma;)</span><input type="range" id="clt-s" min="5" max="40" step="1" value="20" oninput="drawCLT()" aria-label="Population standard deviation"><span class="range-val" id="clt-s-v">20</span></div>
+    </div>
+    <div class="chart-wrap"><canvas id="cltChart" role="img" aria-label="Bell curves showing population vs sampling distribution">Sampling distribution visualization</canvas></div>
+    <div id="clt-stats" style="display:flex;gap:1.5rem;font-size:12px;color:var(--gray-500);font-family:var(--font-mono);flex-wrap:wrap;margin-top:4px"></div>
+    <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;color:var(--gray-500)">
+      <span style="display:flex;align-items:center;gap:5px"><span style="display:inline-block;width:20px;height:3px;background:var(--gray-300);border-radius:2px"></span>Population dist.</span>
+      <span style="display:flex;align-items:center;gap:5px"><span style="display:inline-block;width:20px;height:3px;background:var(--maroon);border-radius:2px"></span>Sampling dist. of x&#772;</span>
+    </div>
+  </div>
+  <div class="card card-green"><h3>Business intuition</h3><p style="font-size:13px">Even if individual customer purchases are highly skewed, the average across a random sample of n &ge; 30 will be approximately normally distributed. This is what makes inference valid even for non-normal business data.</p></div>
+  <button class="btn-next" onclick="go(3)">Continue to Confidence Intervals &rarr;</button>
+</div>
+
+<!-- S3 -->
+<div class="section" id="s3" role="region" aria-label="Section 4">
+  <h2>Confidence Intervals</h2>
+  <div class="card card-maroon"><h3>What is a confidence interval?</h3><p>A confidence interval (CI) is a range of values constructed from sample data likely to contain the true population parameter. A 95% CI means: if we repeated this sampling process 100 times, approximately 95 of the resulting intervals would capture the true mean.</p></div>
+  <div class="formula">CI = x&#772; &plusmn; z* &middot; (s / &radic;n) &nbsp;&nbsp;&nbsp; [use t* when &sigma; unknown or n &lt; 30]</div>
+  <div class="card"><h3>Interactive CI builder</h3>
+    <div class="range-group">
+      <div class="range-row"><span class="range-label">Sample mean (x&#772;)</span><input type="range" id="ci-xbar" min="50" max="150" step="1" value="100" oninput="drawCI()"><span class="range-val" id="ci-xbar-v">100</span></div>
+      <div class="range-row"><span class="range-label">Sample SD (s)</span><input type="range" id="ci-s" min="5" max="40" step="1" value="15" oninput="drawCI()"><span class="range-val" id="ci-s-v">15</span></div>
+      <div class="range-row"><span class="range-label">Sample size (n)</span><input type="range" id="ci-n" min="5" max="200" step="1" value="30" oninput="drawCI()"><span class="range-val" id="ci-n-v">30</span></div>
+      <div class="range-row"><span class="range-label">Confidence level</span><input type="range" id="ci-cl" min="0" max="2" step="1" value="1" oninput="drawCI()"><span class="range-val" id="ci-cl-v">95%</span></div>
+    </div>
+    <div style="background:var(--maroon);border-radius:var(--r-md);padding:1.1rem 1.25rem;margin-top:.5rem">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px"><span style="font-size:13px;color:rgba(255,255,255,.65)">Confidence interval</span><span style="font-family:var(--font-serif);font-size:22px;font-weight:500;color:var(--gold-light)" id="ci-range">&mdash;</span></div>
+      <div class="ci-track" id="ci-visual"></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.5);font-family:var(--font-mono)"><span id="ci-lo-l">&mdash;</span><span>x&#772;</span><span id="ci-hi-l">&mdash;</span></div>
+    </div>
+    <p id="ci-interpretation" style="font-size:12px;margin-top:8px;color:var(--gray-500);font-style:italic"></p>
+  </div>
+  <div class="card"><h3>What changes the width of the CI?</h3>
+    <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px">
+      <div class="width-row"><span class="w-label">&uarr; n</span><div class="width-track"><div class="width-fill" style="width:28%;background:var(--maroon)"></div></div><span class="w-outcome" style="color:var(--green-mid)">Narrower &check;</span></div>
+      <div class="width-row"><span class="w-label">&uarr; s</span><div class="width-track"><div class="width-fill" style="width:80%;background:var(--gold)"></div></div><span class="w-outcome" style="color:#B8600A">Wider &cross;</span></div>
+      <div class="width-row"><span class="w-label">&uarr; conf.</span><div class="width-track"><div class="width-fill" style="width:88%;background:var(--gold)"></div></div><span class="w-outcome" style="color:#B8600A">Wider &cross;</span></div>
+    </div>
+  </div>
+  <div class="misconception"><h3>&starf; Common misinterpretation &mdash; avoid in any presentation</h3><p style="margin-top:4px">A 95% CI does <em>not</em> mean there is a 95% probability the true mean is in this specific interval. The true mean is fixed; the interval varies. Correct: <em>&ldquo;We are 95% confident this interval captures the true population mean.&rdquo;</em></p></div>
+  <button class="btn-next" onclick="go(4)">Continue to Hypothesis Testing &rarr;</button>
+</div>
+
+<!-- S4 -->
+<div class="section" id="s4" role="region" aria-label="Section 5">
+  <h2>Hypothesis Testing</h2>
+  <div class="card card-maroon"><h3>The logic of hypothesis testing</h3><p>We start by assuming the <em>null hypothesis</em> H&#8320; is true (&ldquo;nothing has changed&rdquo;), then ask: how probable is our observed result under that assumption? If very unlikely, we have grounds to reject H&#8320; in favor of the alternative H&#8321;.</p></div>
+  <div class="card"><h3>The five-step framework</h3>
+    <ol class="step-list">
+      <li><strong>State the hypotheses.</strong> H&#8320; asserts the status quo; H&#8321; is the alternative you aim to support with evidence.</li>
+      <li><strong>Choose significance level &alpha;.</strong> Typically 0.05 &mdash; the maximum probability of a Type I error you will accept.</li>
+      <li><strong>Calculate the test statistic.</strong> Converts sample data into a standardized score relative to what H&#8320; predicts.</li>
+      <li><strong>Find the p-value.</strong> Probability of observing a result as extreme &mdash; or more so &mdash; <em>if H&#8320; were true</em>.</li>
+      <li><strong>Decision.</strong> If p &le; &alpha; &rarr; reject H&#8320;. If p &gt; &alpha; &rarr; fail to reject H&#8320; (insufficient evidence, not proof H&#8320; is true).</li>
+    </ol>
+  </div>
+  <div class="two-col">
+    <div class="card"><h3>Error types</h3><div style="margin-top:4px"><div class="verdict-row"><span class="verdict-label">Type I error (&alpha;)</span><span class="chip chip-maroon">False Positive</span></div><div class="verdict-row"><span class="verdict-label">Type II error (&beta;)</span><span class="chip chip-maroon">False Negative</span></div><div class="verdict-row"><span class="verdict-label">Power (1 &minus; &beta;)</span><span class="chip chip-green">True Positive</span></div></div></div>
+    <div class="card"><h3>Tail types</h3><div style="margin-top:4px"><div class="verdict-row"><span class="verdict-label">Two-tailed</span><span style="font-family:var(--font-mono);font-size:12px">&mu; &ne; &mu;&#8320;</span></div><div class="verdict-row"><span class="verdict-label">Left-tailed</span><span style="font-family:var(--font-mono);font-size:12px">&mu; &lt; &mu;&#8320;</span></div><div class="verdict-row"><span class="verdict-label">Right-tailed</span><span style="font-family:var(--font-mono);font-size:12px">&mu; &gt; &mu;&#8320;</span></div></div></div>
+  </div>
+  <div class="card"><h3>Interpreting p-values</h3>
+    <div class="pval-labels"><span>0.001</span><span>0.01</span><span>0.05</span><span>0.10</span><span>1.0</span></div>
+    <div class="pval-strip" role="img" aria-label="P-value spectrum from strong evidence to no evidence"></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><span class="tag tag-maroon">p &lt; 0.01 &mdash; very strong evidence</span><span class="tag tag-gold">p 0.01&ndash;0.05 &mdash; significant</span><span class="tag" style="background:var(--green-pale);color:var(--green-mid);border:1px solid var(--green-tint)">p &gt; 0.05 &mdash; insufficient evidence</span></div>
+  </div>
+  <div class="card card-gold"><h3>Statistical vs. practical significance</h3><p style="font-size:13px">A result can be <em>statistically</em> significant but operationally irrelevant. With n = 10,000, even a $0.02 difference may reach p &lt; 0.05. Always ask: is the effect size large enough to justify the response? Report <strong style="font-weight:600">effect size</strong> alongside p-values in executive presentations.</p></div>
+  <button class="btn-next" onclick="go(5)">Continue to One-Sample t-test &rarr;</button>
+</div>
+
+<!-- S5 -->
+<div class="section" id="s5" role="region" aria-label="Section 6">
+  <h2>One-Sample t-test</h2>
+  <div class="card card-maroon"><h3>When to use it</h3><p>The one-sample t-test applies when: (1) you have a single sample, (2) population SD &sigma; is <em>unknown</em>, and (3) you want to test whether the sample mean differs significantly from a hypothesized value &mu;&#8320;. The t-distribution with n &minus; 1 degrees of freedom accounts for the uncertainty of estimating &sigma;.</p></div>
+  <div class="formula">t = (x&#772; &minus; &mu;&#8320;) / (s / &radic;n) &nbsp;&nbsp;&nbsp; df = n &minus; 1</div>
+  <div class="card"><h3>Live calculator</h3>
+    <p style="font-size:12px;color:var(--gray-500);margin-bottom:.5rem">Scenario: a company claims average monthly revenue per account is $120. You sample 25 accounts and observe x&#772; = $113, s = $22. Does the evidence support a different true mean?</p>
+    <div class="range-group">
+      <div class="range-row"><span class="range-label">Hypothesized &mu;&#8320;</span><input type="range" id="t-mu" min="80" max="160" step="1" value="120" oninput="runTtest()"><span class="range-val" id="t-mu-v">120</span></div>
+      <div class="range-row"><span class="range-label">Sample mean (x&#772;)</span><input type="range" id="t-xbar" min="80" max="160" step="1" value="113" oninput="runTtest()"><span class="range-val" id="t-xbar-v">113</span></div>
+      <div class="range-row"><span class="range-label">Sample SD (s)</span><input type="range" id="t-s" min="5" max="50" step="1" value="22" oninput="runTtest()"><span class="range-val" id="t-s-v">22</span></div>
+      <div class="range-row"><span class="range-label">Sample size (n)</span><input type="range" id="t-n" min="5" max="100" step="1" value="25" oninput="runTtest()"><span class="range-val" id="t-n-v">25</span></div>
+      <div class="range-row"><span class="range-label">Significance &alpha;</span><input type="range" id="t-alpha" min="0" max="1" step="1" value="1" oninput="runTtest()"><span class="range-val" id="t-alpha-v">0.05</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:.75rem">
+      <div class="metric"><p class="metric-label">t statistic</p><p class="metric-val" id="tstat" style="font-size:22px">&mdash;</p></div>
+      <div class="metric"><p class="metric-label">Deg. of freedom</p><p class="metric-val" id="tdf" style="font-size:22px">&mdash;</p></div>
+      <div class="metric"><p class="metric-label">Approx. p-value</p><p class="metric-val" id="tpval" style="font-size:22px">&mdash;</p></div>
+    </div>
+    <div id="t-verdict"></div>
+  </div>
+  <div class="card"><h3>Assumptions to verify</h3>
+    <ol class="step-list">
+      <li>Data are approximately normally distributed <em>or</em> n &ge; 30 (CLT allows relaxing normality)</li>
+      <li>Observations are independent &mdash; random sampling with no pairing or clustering</li>
+      <li>No extreme outliers that would substantially distort the sample mean</li>
+    </ol>
+  </div>
+  <div class="card card-green"><h3>Connection: t-test &harr; confidence interval</h3><p style="font-size:13px">Rejecting H&#8320; at &alpha; = 0.05 (two-tailed) is mathematically equivalent to the hypothesized value &mu;&#8320; falling outside the 95% CI. The CI and the t-test are two perspectives on the same evidence.</p></div>
+  <div class="card"><h3>Knowledge check</h3>
+    <p style="font-size:13px;margin-bottom:.75rem">A logistics firm samples 36 delivery routes and finds a mean delivery time of 48 minutes (s = 12 min). They test whether the true mean differs from their target of 45 min at &alpha; = 0.05 (two-tailed). What is the t statistic?</p>
+    <div id="q1-opts">
+      <button class="quiz-opt" onclick="checkQ(this,false,'q1','Not quite &mdash; check the standard error: SE = s/&radic;n = 12/&radic;36 = 2.')">A &nbsp;&nbsp; t = 1.00</button>
+      <button class="quiz-opt" onclick="checkQ(this,true,'q1','Correct! t = (48 &minus; 45) / (12 / &radic;36) = 3 / 2 = 1.50. With df = 35 at &alpha; = 0.05 two-tailed, critical value &asymp; 2.03. Since |1.50| &lt; 2.03, we fail to reject H&#8320;.')">B &nbsp;&nbsp; t = 1.50</button>
+      <button class="quiz-opt" onclick="checkQ(this,false,'q1','Not quite &mdash; denominator is s/&radic;n, not s alone. SE = 12/6 = 2.')">C &nbsp;&nbsp; t = 3.00</button>
+      <button class="quiz-opt" onclick="checkQ(this,false,'q1','Re-check: t = (x&#772; &minus; &mu;&#8320;) / (s / &radic;n). Numerator = 48 &minus; 45 = 3.')">D &nbsp;&nbsp; t = 0.25</button>
+    </div>
+    <div class="feedback" id="q1-fb" role="alert"></div>
+  </div>
+  <div class="card card-gray" style="text-align:center;padding:1.5rem"><h3 style="color:var(--maroon-dark);margin-bottom:.5rem">Module Complete</h3><p style="font-size:13px;max-width:480px;margin:0 auto">You have covered the full inference chain: populations &rarr; sampling &rarr; distributions &rarr; confidence intervals &rarr; hypothesis testing &rarr; t-tests. These tools form the quantitative backbone of evidence-based management.</p></div>
+</div>
+
+</main>
+<footer class="footer"><strong>University of Redlands</strong> &nbsp;&middot;&nbsp; School of Business &nbsp;&middot;&nbsp; MBA Data Analysis &nbsp;&middot;&nbsp; Statistical Inference Module</footer>
+</div>
+<script>
+let cur=0;
+const zVals=[1.645,1.960,2.576],zLabels=['90%','95%','99%'],aVals=[0.10,0.05,0.01];
+const sections=document.querySelectorAll('.section'),navBtns=document.querySelectorAll('.nav-btn'),completed=new Set([0]);
+function go(i){sections[cur].classList.remove('active');navBtns[cur].classList.remove('active');navBtns[cur].classList.add('done');completed.add(i);cur=i;sections[i].classList.add('active');navBtns[i].classList.remove('done');navBtns[i].classList.add('active');const p=Math.round((Math.max(...[...completed])/5)*100);document.getElementById('prog').style.width=p+'%';document.getElementById('prog-pct').textContent=p+'%';window.scrollTo({top:0,behavior:'smooth'});if(i===2)setTimeout(drawCLT,150);if(i===3)setTimeout(drawCI,150);if(i===5)setTimeout(runTtest,150)}
+function updateN(){const cl=+document.getElementById('cl').value,s=+document.getElementById('sigma').value,e=+document.getElementById('err').value;document.getElementById('cl-v').textContent=zLabels[cl];document.getElementById('sig-v').textContent=s;document.getElementById('err-v').textContent=e;const n=Math.ceil(Math.pow(zVals[cl]*s/e,2));document.getElementById('nval').textContent=n;document.getElementById('n-insight').textContent='With '+zLabels[cl]+' confidence and \u03c3 \u2248 '+s+', you need n = '+n+' to estimate the mean within \u00b1'+e+' units.'}
+updateN();
+let cltChart=null;
+function drawCLT(){const n=+document.getElementById('clt-n').value,sigma=+document.getElementById('clt-s').value;document.getElementById('clt-n-v').textContent=n;document.getElementById('clt-s-v').textContent=sigma;const se=(sigma/Math.sqrt(n)).toFixed(2),mu=100,labels=[],popData=[],sampData=[];for(let x=mu-4*sigma;x<=mu+4*sigma;x+=sigma/8){labels.push(x.toFixed(0));popData.push(Math.exp(-0.5*Math.pow((x-mu)/sigma,2))/(sigma*Math.sqrt(2*Math.PI)));sampData.push(Math.exp(-0.5*Math.pow((x-mu)/+se,2))/(+se*Math.sqrt(2*Math.PI)))}document.getElementById('clt-stats').innerHTML='<span>Population \u03c3 = '+sigma+'</span><span>Standard Error = \u03c3/\u221an = <strong>'+se+'</strong></span>';const ctx=document.getElementById('cltChart').getContext('2d');if(cltChart)cltChart.destroy();cltChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Pop',data:popData,borderColor:'#B8B8B8',backgroundColor:'rgba(184,184,184,0.08)',borderDash:[5,3],fill:true,pointRadius:0,borderWidth:1.5,tension:0.4},{label:'Samp',data:sampData,borderColor:'#570C0F',backgroundColor:'rgba(87,12,15,0.10)',fill:true,pointRadius:0,borderWidth:2.5,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{display:false}},animation:{duration:300}}})}
+function drawCI(){const xbar=+document.getElementById('ci-xbar').value,s=+document.getElementById('ci-s').value,n=+document.getElementById('ci-n').value,cl=+document.getElementById('ci-cl').value;document.getElementById('ci-xbar-v').textContent=xbar;document.getElementById('ci-s-v').textContent=s;document.getElementById('ci-n-v').textContent=n;document.getElementById('ci-cl-v').textContent=zLabels[cl];const z=zVals[cl],me=z*s/Math.sqrt(n),lo=(xbar-me).toFixed(1),hi=(xbar+me).toFixed(1);document.getElementById('ci-range').textContent='( '+lo+',  '+hi+' )';document.getElementById('ci-lo-l').textContent=lo;document.getElementById('ci-hi-l').textContent=hi;const range=xbar*0.5,lp=(50-(me/range*50)).toFixed(1),wp=(me/range*100).toFixed(1);document.getElementById('ci-visual').innerHTML='<div style="position:absolute;top:50%;height:3px;background:rgba(200,168,75,0.5);border-radius:2px;left:'+lp+'%;width:'+wp+'%;transform:translateY(-50%)"></div><div style="position:absolute;top:50%;width:13px;height:13px;border-radius:50%;background:#C8A84B;left:50%;transform:translate(-50%,-50%)"></div><div style="position:absolute;top:50%;width:3px;height:18px;background:#C8A84B;border-radius:2px;left:'+lp+'%;transform:translate(-50%,-50%)"></div><div style="position:absolute;top:50%;width:3px;height:18px;background:#C8A84B;border-radius:2px;left:'+(parseFloat(lp)+parseFloat(wp))+'%;transform:translate(-50%,-50%)"></div>';document.getElementById('ci-interpretation').textContent='We are '+zLabels[cl]+' confident that the true population mean falls between '+lo+' and '+hi+'.'}
+function approxTPValue(t,df){const x=df/(df+t*t);let b=0,term=1/(df/2);b=term;for(let i=1;i<200;i++){term*=(i-0.5)*x/i;b+=term/(df/2+i);if(Math.abs(term/(df/2+i))<1e-9)break}b*=Math.pow(x,df/2)*Math.pow(1-x,0.5);return Math.min(1,Math.max(0.001,2*b))}
+function runTtest(){const mu0=+document.getElementById('t-mu').value,xbar=+document.getElementById('t-xbar').value,s=+document.getElementById('t-s').value,n=+document.getElementById('t-n').value,ai=+document.getElementById('t-alpha').value,alpha=aVals[ai];document.getElementById('t-mu-v').textContent=mu0;document.getElementById('t-xbar-v').textContent=xbar;document.getElementById('t-s-v').textContent=s;document.getElementById('t-n-v').textContent=n;document.getElementById('t-alpha-v').textContent=alpha;const se=s/Math.sqrt(n),t=(xbar-mu0)/se,df=n-1;document.getElementById('tstat').textContent=t.toFixed(2);document.getElementById('tdf').textContent=df;const p=approxTPValue(Math.abs(t),df).toFixed(3);document.getElementById('tpval').textContent=p;const v=document.getElementById('t-verdict');if(+p<=alpha){v.style.background='var(--maroon-pale)';v.style.color='var(--maroon-dark)';v.style.borderColor='var(--maroon-tint)';v.innerHTML='<strong>Reject H\u2080</strong> \u2014 p = '+p+' \u2264 \u03b1 = '+alpha+'. There is statistically significant evidence that the true mean differs from '+mu0+'.'}else{v.style.background='var(--green-pale)';v.style.color='#1A4010';v.style.borderColor='var(--green-tint)';v.innerHTML='<strong>Fail to reject H\u2080</strong> \u2014 p = '+p+' > \u03b1 = '+alpha+'. The data do not provide sufficient evidence to conclude the mean differs from '+mu0+'.'}}
+function checkQ(el,correct,qid,msg){const opts=document.querySelectorAll('#'+qid+'-opts .quiz-opt');opts.forEach(o=>{o.classList.add('disabled');o.setAttribute('disabled','')});el.classList.add(correct?'correct':'wrong');const fb=document.getElementById(qid+'-fb');fb.textContent=msg;fb.className='feedback show '+(correct?'ok':'err')}
+</script>
+</body>
+</html>
